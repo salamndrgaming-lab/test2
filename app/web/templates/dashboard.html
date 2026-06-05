@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Dashboard</h1>
+
+{% if not ready.brain_ready or not ready.printify_ready %}
+<div class="card" style="border-color: var(--warn);">
+  <h2>⚙️ Finish setup to start earning</h2>
+  <p class="muted">Your agents need a few free keys before they can work.</p>
+  <ul class="small">
+    <li>AI brain (Gemini/Groq): {% if ready.brain_ready %}✅ connected{% else %}❌ not connected{% endif %}</li>
+    <li>Printify store: {% if ready.printify_ready %}✅ connected{% else %}❌ not connected{% endif %}</li>
+  </ul>
+  <a class="btn primary" href="/settings">Open setup wizard →</a>
+</div>
+{% endif %}
+
+<div class="grid">
+  <div class="card">
+    <div class="muted small">Net revenue (real)</div>
+    <div class="stat {% if revenue.net == 0 %}zero{% endif %}">${{ '%.2f'|format(revenue.net) }}</div>
+    <div class="muted small">{{ revenue.orders }} real order(s) recorded</div>
+  </div>
+  <div class="card">
+    <div class="muted small">Pending approvals</div>
+    <div class="stat">{{ pending_count }}</div>
+    <a class="small" href="/approvals">Review them →</a>
+  </div>
+  <div class="card">
+    <div class="muted small">Free-tier usage today</div>
+    {% for q in quota %}
+    <div style="margin-top:8px;">
+      <div class="small">{{ q.service }} — {{ q.used }}/{{ q.limit }}</div>
+      <div class="bar"><span style="width: {{ q.pct }}%;"></span></div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="card">
+  <h2>📱 Open on your phone</h2>
+  {% if tunnel.public_url %}
+    <p>Secure link (works anywhere): <code class="url">{{ tunnel.public_url }}</code></p>
+  {% elif tunnel.cloudflared_available %}
+    <p class="muted">Secure phone link is starting… it will appear here in a few seconds
+      (watch the activity feed).</p>
+  {% else %}
+    <p class="muted">Same-wifi link (phone on your home network):
+      <code class="url">{{ tunnel.lan_url }}</code></p>
+    <p class="small muted">For a link that works anywhere, install <code>cloudflared</code>
+      (the setup page explains how) and restart.</p>
+  {% endif %}
+</div>
+
+<div class="two-col">
+  <div class="card">
+    <h2>Your agent team</h2>
+    {% for a in agents %}
+    <div class="agent">
+      <span class="dot {{ a.status }}" data-agent="{{ a.name }}"></span>
+      <div class="info">
+        <div><strong>{{ a.display_name }}</strong>
+          <span class="pill status" data-agent="{{ a.name }}">{{ a.status.replace('_',' ') }}</span>
+        </div>
+        <div class="muted small">{{ a.description }}</div>
+      </div>
+      <label class="small" style="display:flex;align-items:center;gap:6px;">
+        <input type="checkbox" data-action="toggle-agent" data-agent="{{ a.name }}"
+               {% if a.enabled %}checked{% endif %}>
+        on
+      </label>
+      <button class="btn small" data-action="run-agent" data-agent="{{ a.name }}">Run now</button>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="card">
+    <h2>Live activity — see EVERYTHING</h2>
+    <div id="feed">
+      {% for e in activity %}
+      <div class="event {{ e.level }}">
+        <span class="who">{{ e.agent }}</span> {{ e.message }}
+        <span class="ts">{{ e.created_at }}</span>
+      </div>
+      {% endfor %}
+      {% if not activity %}<div class="muted small">No activity yet. Turn on an agent or hit "Run now".</div>{% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

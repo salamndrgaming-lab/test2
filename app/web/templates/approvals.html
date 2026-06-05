@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Approvals</h1>
+<p class="muted">Nothing goes live, gets posted, or spends money without your OK here.</p>
+
+{% if not approvals %}
+<div class="card"><p class="muted">No pending approvals right now. ✨</p></div>
+{% endif %}
+
+{% for ap in approvals %}
+<div class="card approval">
+  <h2>{{ ap.title }}</h2>
+  <div class="muted small">From: {{ ap.agent }} agent · {{ ap.created_at }}</div>
+  {% if ap.preview_url %}
+    <p style="margin-top:12px;"><img src="{{ ap.preview_url }}" alt="preview"></p>
+  {% endif %}
+  <p style="white-space: pre-line;">{{ ap.summary }}</p>
+  <div class="actions">
+    <button class="btn primary" data-action="approve" data-id="{{ ap.id }}">✅ Approve</button>
+    <button class="btn danger" data-action="reject" data-id="{{ ap.id }}">✕ Reject</button>
+  </div>
+</div>
+{% endfor %}
+{% endblock %}

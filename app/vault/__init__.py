@@ -1,0 +1,1 @@
+"""Secure local secret storage."""

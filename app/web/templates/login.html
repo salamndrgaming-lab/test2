@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block nav %}{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="card">
+    <h1 class="center">🤖 {{ app_name }}</h1>
+    <p class="muted center">Enter your PIN to continue.</p>
+    {% if error %}<div class="error-box">{{ error }}</div>{% endif %}
+    <form method="post" action="/login">
+      <label>PIN
+        <input type="password" name="pin" autofocus required>
+      </label>
+      <button class="btn primary" style="width:100%;margin-top:16px;" type="submit">Log in</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

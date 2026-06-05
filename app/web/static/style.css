@@ -1,0 +1,110 @@
+:root {
+  --bg: #0f1419;
+  --panel: #1a212b;
+  --panel-2: #222c38;
+  --text: #e6edf3;
+  --muted: #93a1b1;
+  --accent: #3fb950;
+  --accent-2: #58a6ff;
+  --warn: #d29922;
+  --error: #f85149;
+  --border: #2d3742;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 15px; line-height: 1.5;
+}
+a { color: var(--accent-2); text-decoration: none; }
+
+/* Top nav */
+.nav {
+  display: flex; align-items: center; gap: 4px; flex-wrap: wrap;
+  background: var(--panel); border-bottom: 1px solid var(--border);
+  padding: 10px 16px; position: sticky; top: 0; z-index: 10;
+}
+.nav .brand { font-weight: 700; margin-right: auto; font-size: 16px; }
+.nav a.tab {
+  color: var(--muted); padding: 8px 12px; border-radius: 8px; font-weight: 600;
+}
+.nav a.tab.active, .nav a.tab:hover { color: var(--text); background: var(--panel-2); }
+.badge {
+  display: inline-block; min-width: 20px; text-align: center; background: var(--warn);
+  color: #1a1100; border-radius: 999px; padding: 0 7px; font-size: 12px; font-weight: 800;
+  margin-left: 6px;
+}
+
+.container { max-width: 1100px; margin: 0 auto; padding: 18px 16px 60px; }
+h1 { font-size: 22px; margin: 8px 0 16px; }
+h2 { font-size: 17px; margin: 0 0 12px; }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+
+/* Layout */
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.two-col { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; }
+@media (max-width: 760px) { .two-col { grid-template-columns: 1fr; } }
+
+.card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 16px;
+}
+.stat { font-size: 28px; font-weight: 800; }
+.stat.zero { color: var(--muted); }
+
+/* Buttons */
+.btn {
+  display: inline-block; border: 1px solid var(--border); background: var(--panel-2);
+  color: var(--text); padding: 9px 14px; border-radius: 9px; font-weight: 700;
+  cursor: pointer; font-size: 14px;
+}
+.btn:hover { border-color: var(--accent-2); }
+.btn.primary { background: var(--accent); color: #04210b; border-color: var(--accent); }
+.btn.danger { background: transparent; color: var(--error); border-color: var(--error); }
+.btn.small { padding: 5px 10px; font-size: 13px; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+input[type=text], input[type=password], textarea {
+  width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--border);
+  border-radius: 9px; padding: 10px 12px; font-size: 15px; margin-top: 6px;
+}
+
+/* Agent rows */
+.agent { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.agent:last-child { border-bottom: none; }
+.agent .info { flex: 1; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--muted); flex: 0 0 auto; }
+.dot.running { background: var(--accent-2); }
+.dot.waiting_approval { background: var(--warn); }
+.dot.error { background: var(--error); }
+.dot.idle { background: var(--muted); }
+.pill { font-size: 12px; color: var(--muted); }
+
+/* Activity feed */
+#feed { max-height: 460px; overflow-y: auto; }
+.event { padding: 7px 0; border-bottom: 1px dashed var(--border); font-size: 14px; }
+.event .who { font-weight: 700; }
+.event .ts { color: var(--muted); font-size: 12px; }
+.event.success .who { color: var(--accent); }
+.event.warn .who { color: var(--warn); }
+.event.error .who { color: var(--error); }
+
+/* Approval cards */
+.approval img { max-width: 280px; width: 100%; border-radius: 10px; border: 1px solid var(--border); }
+.approval .actions { display: flex; gap: 10px; margin-top: 12px; }
+
+/* Auth pages */
+.auth-wrap { max-width: 380px; margin: 8vh auto; }
+.center { text-align: center; }
+.error-box { background: rgba(248,81,73,.12); border: 1px solid var(--error); color: #ffb4ae;
+  padding: 10px 12px; border-radius: 9px; margin-bottom: 12px; }
+.ok-box { background: rgba(63,185,80,.12); border: 1px solid var(--accent); color: #9fe0ab;
+  padding: 10px 12px; border-radius: 9px; margin-bottom: 12px; }
+
+/* Quota bars */
+.bar { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; height: 10px; overflow: hidden; }
+.bar > span { display: block; height: 100%; background: var(--accent-2); }
+
+code.url { background: var(--bg); padding: 3px 7px; border-radius: 6px; border: 1px solid var(--border); word-break: break-all; }

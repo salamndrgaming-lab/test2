@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ app_name }}{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  {% block nav %}
+  <nav class="nav">
+    <span class="brand">🤖 {{ app_name }}</span>
+    <a class="tab {% if request.url.path == '/' %}active{% endif %}" href="/">Dashboard</a>
+    <a class="tab {% if request.url.path == '/approvals' %}active{% endif %}" href="/approvals">
+      Approvals<span class="badge" id="pending-badge"
+        style="{% if not pending_count %}display:none{% endif %}">{{ pending_count }}</span>
+    </a>
+    <a class="tab {% if request.url.path == '/revenue' %}active{% endif %}" href="/revenue">Revenue</a>
+    <a class="tab {% if request.url.path == '/settings' %}active{% endif %}" href="/settings">Settings</a>
+    <a class="tab" href="/logout">Log out</a>
+  </nav>
+  {% endblock %}
+
+  <main class="container">
+    {% block content %}{% endblock %}
+  </main>
+
+  <script src="/static/app.js"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

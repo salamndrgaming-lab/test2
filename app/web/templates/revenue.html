@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Revenue</h1>
+<p class="muted">Every figure here is real — pulled from your connected platforms by the
+  bookkeeper agent. No estimates, no placeholders.</p>
+
+<div class="grid">
+  <div class="card">
+    <div class="muted small">Gross sales</div>
+    <div class="stat {% if totals.gross == 0 %}zero{% endif %}">${{ '%.2f'|format(totals.gross) }}</div>
+  </div>
+  <div class="card">
+    <div class="muted small">Fees</div>
+    <div class="stat {% if totals.fees == 0 %}zero{% endif %}">${{ '%.2f'|format(totals.fees) }}</div>
+  </div>
+  <div class="card">
+    <div class="muted small">Net (yours)</div>
+    <div class="stat {% if totals.net == 0 %}zero{% endif %}">${{ '%.2f'|format(totals.net) }}</div>
+  </div>
+  <div class="card">
+    <div class="muted small">Orders</div>
+    <div class="stat {% if totals.orders == 0 %}zero{% endif %}">{{ totals.orders }}</div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>By stream</h2>
+  {% if by_stream %}
+    {% for s in by_stream %}
+    <div class="agent">
+      <div class="info"><strong>{{ s.stream }}</strong></div>
+      <div>${{ '%.2f'|format(s.net) }} · {{ s.orders }} order(s)</div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p class="muted">No sales yet — this fills in automatically as real orders come in.</p>
+  {% endif %}
+</div>
+
+<div class="card">
+  <h2>Recent orders</h2>
+  {% if recent %}
+    {% for r in recent %}
+    <div class="agent">
+      <div class="info">
+        <strong>{{ r.product_title or 'Order' }}</strong>
+        <span class="muted small">{{ r.platform }} · {{ r.occurred_at }}</span>
+      </div>
+      <div>${{ '%.2f'|format(r.net_amount) }}</div>
+    </div>
+    {% endfor %}
+  {% else %}
+    <p class="muted">No orders recorded yet.</p>
+  {% endif %}
+</div>
+{% endblock %}

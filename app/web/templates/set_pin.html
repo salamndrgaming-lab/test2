@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block nav %}{% endblock %}
+{% block content %}
+<div class="auth-wrap">
+  <div class="card">
+    <h1 class="center">Welcome 👋</h1>
+    <p class="muted center">Create a PIN to protect your dashboard. You'll use it to log in,
+      including from your phone over the secure link.</p>
+    {% if error %}<div class="error-box">{{ error }}</div>{% endif %}
+    <form method="post" action="/set-pin">
+      <label>Choose a PIN (4+ characters)
+        <input type="password" name="pin" autofocus required>
+      </label>
+      <label style="display:block;margin-top:12px;">Confirm PIN
+        <input type="password" name="confirm" required>
+      </label>
+      <button class="btn primary" style="width:100%;margin-top:16px;" type="submit">
+        Set PIN &amp; continue
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

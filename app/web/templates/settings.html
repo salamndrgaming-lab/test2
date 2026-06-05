@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Setup &amp; Settings</h1>
+<p class="muted">A one-time, ~15-minute setup. I can't create these accounts for you
+  (the providers forbid bots from signing up), so follow each step and paste your key —
+  after that the agents run on their own.</p>
+
+{% for step in steps %}
+<div class="card">
+  <h2>{{ step.title }}
+    {% if step.connected %}<span class="ok-box" style="display:inline-block;padding:2px 8px;margin:0;">Connected ✅</span>{% endif %}
+  </h2>
+  <p class="muted small">{{ step.why }}</p>
+  <p><a href="{{ step.url }}" target="_blank" rel="noopener">Open the signup page ↗</a></p>
+  <ol class="small">
+    {% for s in step.steps %}<li>{{ s }}</li>{% endfor %}
+  </ol>
+  <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;">
+    <label style="flex:1;min-width:220px;">Paste your key/token here
+      <input type="password" id="in_{{ step.key }}"
+             placeholder="{% if step.connected %}•••••••• (already saved){% endif %}">
+    </label>
+    <button class="btn primary" onclick="saveSecret('{{ step.key }}')">Save</button>
+    {% if step.connected %}
+      <button class="btn danger" onclick="removeSecret('{{ step.key }}')">Disconnect</button>
+    {% endif %}
+  </div>
+  <div class="small" id="msg_{{ step.key }}" style="margin-top:8px;"></div>
+</div>
+{% endfor %}
+
+<div class="card">
+  <h2>Test the AI brain</h2>
+  <p class="muted small">Confirms a brain key works. Sends one short prompt.</p>
+  <button class="btn" onclick="testBrain()">Send test prompt</button>
+  <div class="small" id="brain_msg" style="margin-top:10px;"></div>
+</div>
+
+<div class="card">
+  <h2>📱 Phone access</h2>
+  {% if tunnel.public_url %}
+    <p>Secure link (anywhere): <code class="url">{{ tunnel.public_url }}</code></p>
+  {% else %}
+    <p>Same-wifi link: <code class="url">{{ tunnel.lan_url }}</code></p>
+  {% endif %}
+  <p class="small muted">cloudflared (secure-link tool):
+    {% if tunnel.cloudflared_available %}installed ✅{% else %}not installed — only same-wifi access works until it's added.{% endif %}
+  </p>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+async function saveSecret(key) {
+  const val = document.getElementById("in_" + key).value;
+  const msg = document.getElementById("msg_" + key);
+  if (!val.trim()) { msg.innerHTML = '<span style="color:var(--error)">Paste a value first.</span>'; return; }
+  try {
+    await window.api("POST", "/api/secret", { key: key, value: val });
+    msg.innerHTML = '<span style="color:var(--accent)">Saved ✅</span>';
+    setTimeout(function () { location.reload(); }, 700);
+  } catch (e) { msg.innerHTML = '<span style="color:var(--error)">' + e.message + '</span>'; }
+}
+async function removeSecret(key) {
+  if (!confirm("Disconnect this service?")) return;
+  await window.api("DELETE", "/api/secret/" + key);
+  location.reload();
+}
+async function testBrain() {
+  const msg = document.getElementById("brain_msg");
+  msg.textContent = "Thinking…";
+  try {
+    const r = await window.api("POST", "/api/brain/test", { prompt: "Say hello in one short sentence." });
+    msg.innerHTML = '<span style="color:var(--accent)">Brain replied:</span> ' +
+      (r.reply || "").replace(/</g, "&lt;");
+  } catch (e) {
+    msg.innerHTML = '<span style="color:var(--error)">' + e.message + '</span>';
+  }
+}
+</script>
+{% endblock %}
