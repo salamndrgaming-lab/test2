@@ -46,6 +46,17 @@ WIZARD_STEPS = [
             "Copy the token and paste it below.",
         ],
     },
+    {
+        "key": "gumroad_access_token",
+        "title": "Connect Gumroad (digital products) — free",
+        "why": "Lets the bookkeeper track real sales of your digital products. Free to start (~10% per sale).",
+        "url": "https://app.gumroad.com/settings/advanced",
+        "steps": [
+            "Create a free Gumroad account.",
+            "Open Settings → Advanced (the link above) and under 'Applications' create an application.",
+            "Generate an access token for it, copy the token, and paste it below.",
+        ],
+    },
 ]
 
 

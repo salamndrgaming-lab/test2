@@ -21,6 +21,7 @@ The in-app **Setup wizard** walks you through each of these and where to click:
 1. **Google Gemini API key** — the agents' "brain". (aistudio.google.com)
 2. **Groq API key** *(optional backup brain)*. (console.groq.com)
 3. **Printify API token** — your print-on-demand store. (printify.com)
+4. **Gumroad access token** — to sell digital products & track their sales. (gumroad.com)
 
 You'll also connect your own **payout method** inside Printify so real earnings
 reach you (only you can do that).
@@ -60,7 +61,7 @@ installed (the Settings page tells you if it's missing).
 |-------|--------------|
 | **Setup** | Guides one-time signups; stores keys securely. |
 | **Print-on-Demand** | Designs products on Printify; waits for your approval to publish. |
-| **Digital Products** | *(Milestone 2)* Builds ebooks/templates + ready-to-paste listings. |
+| **Digital Products** | Writes a real PDF product + cover + listing copy; hands you a one-click flow to list it on Gumroad. |
 | **Faceless Video** | *(Milestone 3)* Scripts, narrates, assembles shorts; uploads privately for review. |
 | **Marketing** | *(Milestone 4)* Drafts posts; every public post needs approval. |
 | **Bookkeeper** | Pulls **real** sales data only; keeps revenue honest. |

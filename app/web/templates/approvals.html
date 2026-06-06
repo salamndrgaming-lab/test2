@@ -15,6 +15,15 @@
     <p style="margin-top:12px;"><img src="{{ ap.preview_url }}" alt="preview"></p>
   {% endif %}
   <p style="white-space: pre-line;">{{ ap.summary }}</p>
+  {% if ap.payload and ap.payload.file_url %}
+  <p>
+    <a class="btn small" href="{{ ap.payload.file_url }}" target="_blank" rel="noopener">⬇ Download the file</a>
+    {% if ap.payload.handoff_url %}
+    <a class="btn small" href="{{ ap.payload.handoff_url }}" target="_blank" rel="noopener">
+      Open {{ ap.payload.platform or 'store' }} to create the listing ↗</a>
+    {% endif %}
+  </p>
+  {% endif %}
   <div class="actions">
     <button class="btn primary" data-action="approve" data-id="{{ ap.id }}">✅ Approve</button>
     <button class="btn danger" data-action="reject" data-id="{{ ap.id }}">✕ Reject</button>

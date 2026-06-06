@@ -50,6 +50,7 @@ SECRET_KEYS = {
     "gemini_api_key": "Google Gemini API key",
     "groq_api_key": "Groq API key",
     "printify_api_token": "Printify API token",
+    "gumroad_access_token": "Gumroad access token",
 }
 
 

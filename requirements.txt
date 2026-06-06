@@ -12,3 +12,4 @@ cryptography==44.0.0
 keyring==25.6.0
 qrcode==8.0
 pillow==11.1.0
+reportlab==4.2.5
