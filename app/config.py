@@ -13,6 +13,7 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = Path(os.environ.get("AIT_DATA_DIR", ROOT_DIR / "data"))
 GENERATED_DIR = DATA_DIR / "generated"      # designs, audio, video drafts live here
+VOICES_DIR = DATA_DIR / "voices"            # downloaded Piper TTS voice models
 DB_PATH = DATA_DIR / "app.db"
 VAULT_FILE = DATA_DIR / "vault.enc"         # encrypted-at-rest secrets fallback
 VAULT_KEY_FILE = DATA_DIR / ".vault_key"    # used only if OS keyring is unavailable
@@ -58,3 +59,4 @@ def ensure_dirs() -> None:
     """Create runtime folders if they do not exist yet (idempotent)."""
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     GENERATED_DIR.mkdir(parents=True, exist_ok=True)
+    VOICES_DIR.mkdir(parents=True, exist_ok=True)

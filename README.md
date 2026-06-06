@@ -62,7 +62,7 @@ installed (the Settings page tells you if it's missing).
 | **Setup** | Guides one-time signups; stores keys securely. |
 | **Print-on-Demand** | Designs products on Printify; waits for your approval to publish. |
 | **Digital Products** | Writes a real PDF product + cover + listing copy; hands you a one-click flow to list it on Gumroad. |
-| **Faceless Video** | *(Milestone 3)* Scripts, narrates, assembles shorts; uploads privately for review. |
+| **Faceless Video** | Writes a script, voices it locally (Piper TTS), generates scenes, and assembles a captioned vertical MP4 (ffmpeg) ready to upload to YouTube. |
 | **Marketing** | *(Milestone 4)* Drafts posts; every public post needs approval. |
 | **Bookkeeper** | Pulls **real** sales data only; keeps revenue honest. |
 
