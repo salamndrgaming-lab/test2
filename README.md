@@ -63,7 +63,7 @@ installed (the Settings page tells you if it's missing).
 | **Print-on-Demand** | Designs products on Printify; waits for your approval to publish. |
 | **Digital Products** | Writes a real PDF product + cover + listing copy; hands you a one-click flow to list it on Gumroad. |
 | **Faceless Video** | Writes a script, voices it locally (Piper TTS), generates scenes, and assembles a captioned vertical MP4 (ffmpeg) ready to upload to YouTube. |
-| **Marketing** | *(Milestone 4)* Drafts posts; every public post needs approval. |
+| **Marketing** | Drafts promo posts + graphics for your live products and hands you a prefilled X/Reddit/Facebook composer — you review and hit Post. |
 | **Bookkeeper** | Pulls **real** sales data only; keeps revenue honest. |
 
 Agents marked *(Milestone …)* are wired in but disabled — we build and switch them
