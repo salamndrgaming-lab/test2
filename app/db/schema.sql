@@ -88,3 +88,26 @@ CREATE TABLE IF NOT EXISTS quota_usage (
     units_used INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY (service, day)
 );
+
+-- Demand/trend research briefs that steer WHAT the agents create. Synthesized by
+-- the brain from FREE best-effort signals (Google Trends RSS, Reddit). These are
+-- guidance only — they never publish, post, or spend.
+CREATE TABLE IF NOT EXISTS demand_briefs (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    source        TEXT NOT NULL,            -- e.g. trends+reddit | brain_only | optimizer
+    niche         TEXT,
+    audience      TEXT,
+    product_angle TEXT,
+    keywords_json TEXT,
+    created_at    TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+-- Plain-language reports the optimizer writes from REAL sales ("what's working").
+CREATE TABLE IF NOT EXISTS reports (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    kind       TEXT NOT NULL,               -- e.g. optimizer
+    title      TEXT NOT NULL,
+    body       TEXT,
+    data_json  TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);

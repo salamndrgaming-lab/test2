@@ -11,6 +11,7 @@ from app.agents.digital_agent import DigitalAgent
 from app.agents.video_agent import VideoAgent
 from app.agents.marketing_agent import MarketingAgent
 from app.agents.bookkeeper_agent import BookkeeperAgent
+from app.agents.optimizer_agent import OptimizerAgent
 
 REGISTRY = {
     "onboarding": OnboardingAgent(),
@@ -18,6 +19,7 @@ REGISTRY = {
     "digital": DigitalAgent(),
     "video": VideoAgent(),
     "marketing": MarketingAgent(),
+    "optimizer": OptimizerAgent(),
     "bookkeeper": BookkeeperAgent(),
 }
 

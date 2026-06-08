@@ -51,6 +51,8 @@ def _seed_agents() -> None:
          "Writes scripts, narrates, assembles shorts, and uploads privately for your review."),
         ("marketing", "Marketing Agent",
          "Drafts captions and posts — every public post needs your approval first."),
+        ("optimizer", "Optimizer Agent",
+         "Studies your REAL sales and steers the team toward what's actually selling."),
         ("bookkeeper", "Bookkeeper Agent",
          "Pulls REAL sales/payout data only and keeps your revenue numbers honest."),
     ]

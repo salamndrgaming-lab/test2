@@ -46,6 +46,14 @@ QUOTA_LIMITS = {
     "youtube": 10000,     # quota units/day
 }
 
+# --- Creation volume (more shots on goal) ----------------------------------
+# How many distinct product ideas each agent proposes per run. POD multiplies
+# further: each design is placed on EVERY blueprint below, so one approved idea
+# becomes many SKUs (e.g. 3 ideas x 4 blueprints = 12 products). Video stays low
+# because each one is heavy to render (TTS + ffmpeg).
+BATCH = {"pod": 3, "digital": 2, "video": 1}
+POD_BLUEPRINTS = ["t-shirt", "mug", "sticker", "poster"]
+
 # Names of secrets stored in the vault. Keep in sync with the onboarding wizard.
 SECRET_KEYS = {
     "gemini_api_key": "Google Gemini API key",
