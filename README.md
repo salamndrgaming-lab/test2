@@ -30,21 +30,25 @@ reach you (only you can do that).
 
 ## How to start it
 
-### The simple way (once packaged)
-Double-click the **Start** app. Your browser opens to the dashboard. That's it.
+### The simple way — no terminal needed
+1. Install **Python 3.10+** from [python.org](https://www.python.org/downloads/)
+   (on Windows, tick **"Add Python to PATH"** during install). One time only.
+2. Double-click the Start file for your system:
+   - **Windows:** `Start.bat`
+   - **macOS:** `Start.command`
+   - **Linux:** `start.sh`
 
-### Running from source (for setup/testing)
-1. Install **Python 3.11+** (python.org). On Windows tick "Add Python to PATH".
-2. In this folder, install the dependencies once:
-   ```
-   pip install -r requirements.txt
-   ```
-3. Start it:
-   ```
-   python launcher.py
-   ```
-4. Your browser opens to `http://127.0.0.1:8765`. Set a PIN, then open **Settings**
-   to run the wizard.
+The first launch sets itself up automatically (it creates an isolated environment
+and installs everything — this takes a few minutes once). Every launch after that
+is instant. Your browser opens to the dashboard; set a PIN, then open **Settings**
+to run the wizard. To stop it, close the little window that opened.
+
+### Running from source (for developers)
+```
+pip install -r requirements.txt
+python launcher.py
+```
+Your browser opens to `http://127.0.0.1:8765`.
 
 ### See it on your phone
 The dashboard is mobile-friendly. When the app starts it creates a **secure link**
