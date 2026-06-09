@@ -12,13 +12,17 @@ from app.agents.video_agent import VideoAgent
 from app.agents.marketing_agent import MarketingAgent
 from app.agents.bookkeeper_agent import BookkeeperAgent
 from app.agents.optimizer_agent import OptimizerAgent
+from app.agents.blog_agent import BlogAgent
+from app.agents.newsletter_agent import NewsletterAgent
 
 REGISTRY = {
     "onboarding": OnboardingAgent(),
     "pod": PodAgent(),
     "digital": DigitalAgent(),
     "video": VideoAgent(),
+    "blog": BlogAgent(),
     "marketing": MarketingAgent(),
+    "newsletter": NewsletterAgent(),
     "optimizer": OptimizerAgent(),
     "bookkeeper": BookkeeperAgent(),
 }

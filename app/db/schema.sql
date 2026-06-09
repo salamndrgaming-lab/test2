@@ -111,3 +111,27 @@ CREATE TABLE IF NOT EXISTS reports (
     data_json  TEXT,
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
+
+-- SEO blog posts (free organic traffic). Published posts are served on the public
+-- /blog and can be exported as static HTML. Approved by you before going live.
+CREATE TABLE IF NOT EXISTS blog_posts (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    slug          TEXT UNIQUE NOT NULL,
+    title         TEXT NOT NULL,
+    summary       TEXT,
+    body_html     TEXT,
+    keywords_json TEXT,
+    product_id    INTEGER,
+    status        TEXT NOT NULL DEFAULT 'draft',   -- draft|published
+    created_at    TEXT NOT NULL DEFAULT (datetime('now')),
+    published_at  TEXT
+);
+
+-- Email list captured from the public blog (an owned audience you can promote to).
+-- The newsletter agent drafts broadcasts; you send them from your own email tool.
+CREATE TABLE IF NOT EXISTS email_subscribers (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    email      TEXT UNIQUE NOT NULL,
+    source     TEXT,
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);

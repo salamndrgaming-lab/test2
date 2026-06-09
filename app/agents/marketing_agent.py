@@ -21,14 +21,16 @@ from app.brain import router as brain
 from app.db import database
 from app.integrations import images, social
 from app.orchestrator import approval, event_bus
+from app.remote import tunnel
 
 _SYSTEM = (
     "You are a social-media marketer. Respond with ONLY a JSON object, no prose, no markdown "
-    "fences. Keys: platform (one of: x, reddit, facebook — pick the best fit), post_text (the "
-    "ready-to-publish post; punchy, value-first, not spammy; <=400 chars; for X keep it tweet "
-    "length), hashtags (array of 2-5 strings each starting with #), image_prompt (a prompt for "
-    "an eye-catching promo graphic), subreddit (a relevant subreddit name without 'r/', or empty "
-    "if platform isn't reddit)."
+    "fences. Keys: platform (one of: x, reddit, facebook, pinterest, threads, bluesky, tumblr — "
+    "pick the best fit; pinterest is great for visual products), post_text (the ready-to-publish "
+    "post; punchy, value-first, not spammy; <=400 chars; for X keep it tweet length), hashtags "
+    "(array of 2-5 strings each starting with #), image_prompt (a prompt for an eye-catching "
+    "promo graphic), subreddit (a relevant subreddit name without 'r/', or empty if platform "
+    "isn't reddit)."
 )
 
 
@@ -74,8 +76,15 @@ class MarketingAgent(BaseAgent):
         except Exception as exc:
             self.log(f"Promo graphic skipped ({exc}). Post still ready.", level="warn")
 
+        # Pinterest (and similar) need a PUBLIC image + destination. When the secure
+        # phone link is live, the /generated image and public /blog are reachable, so
+        # we can offer image-based pins; otherwise build_share_url falls back to X.
+        public = tunnel.public_url()
+        media = (public + image_url) if (public and image_url) else None
+        link = (public + "/blog") if public else None
         label, handoff_url = social.build_share_url(
-            p.get("platform", "x"), text=post_text, hashtags=hashtags, title=title)
+            p.get("platform", "x"), text=post_text, hashtags=hashtags, title=title,
+            link=link, media=media)
 
         summary = (
             f"{post_text}\n\n{' '.join(hashtags)}\n\n"

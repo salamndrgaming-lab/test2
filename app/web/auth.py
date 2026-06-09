@@ -16,9 +16,10 @@ from app.db import database
 _PIN_KEY = "pin_hash"
 _ITERATIONS = 200_000
 
-# Paths reachable without logging in.
+# Paths reachable without logging in. The public blog (and its subscribe form) are
+# intentionally open — that's the whole point of a traffic-driving blog.
 PUBLIC_PATHS = {"/login", "/set-pin", "/healthz"}
-PUBLIC_PREFIXES = ("/static/",)
+PUBLIC_PREFIXES = ("/static/", "/blog")
 
 
 def is_pin_set() -> bool:

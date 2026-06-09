@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ post.title }}</title>
+  <meta name="description" content="{{ post.summary }}">
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    .blog{max-width:720px;margin:2rem auto;padding:0 1rem;line-height:1.6}
+    .blog .cta{background:#f3f4f6;padding:1rem;border-radius:8px}
+    .blog .sub{margin-top:2rem;background:#f3f4f6;padding:1rem;border-radius:8px}
+    .blog .sub form{display:flex;gap:.5rem;flex-wrap:wrap}
+    .blog .sub input{flex:1;min-width:200px;padding:.5rem}
+  </style>
+</head>
+<body>
+  <div class="blog">
+    <p><a href="/blog">← All posts</a></p>
+    <h1>{{ post.title }}</h1>
+    {{ post.body_html | safe }}
+    <div class="sub">
+      <h3>Like this? Get the next one by email</h3>
+      <form method="post" action="/blog/subscribe">
+        <input type="email" name="email" placeholder="you@example.com" required>
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

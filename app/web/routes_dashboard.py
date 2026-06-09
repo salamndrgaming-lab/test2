@@ -112,6 +112,36 @@ async def revenue_page(request: Request):
     return templates.TemplateResponse("revenue.html", ctx)
 
 
+# --- public blog (no login required) ---------------------------------------
+@router.get("/blog", response_class=HTMLResponse)
+async def blog_index(request: Request, subscribed: int = 0):
+    posts = database.query(
+        "SELECT slug, title, summary FROM blog_posts WHERE status='published' "
+        "ORDER BY published_at DESC, id DESC")
+    return templates.TemplateResponse("blog_index.html", {
+        "request": request, "blog_title": f"{config.APP_NAME} Blog",
+        "posts": posts, "subscribed": bool(subscribed)})
+
+
+@router.post("/blog/subscribe")
+async def blog_subscribe(request: Request, email: str = Form(...)):
+    email = email.strip().lower()
+    if "@" in email and "." in email:
+        database.execute(
+            "INSERT OR IGNORE INTO email_subscribers (email, source) VALUES (?, 'blog')",
+            (email,))
+    return RedirectResponse("/blog?subscribed=1", status_code=303)
+
+
+@router.get("/blog/{slug}", response_class=HTMLResponse)
+async def blog_post(request: Request, slug: str):
+    post = database.query_one(
+        "SELECT * FROM blog_posts WHERE slug=? AND status='published'", (slug,))
+    if not post:
+        return RedirectResponse("/blog", status_code=303)
+    return templates.TemplateResponse("blog_post.html", {"request": request, "post": post})
+
+
 @router.get("/settings", response_class=HTMLResponse)
 async def settings_page(request: Request):
     ctx = _base_ctx(request)

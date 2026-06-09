@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ blog_title }}</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    .blog{max-width:720px;margin:2rem auto;padding:0 1rem;line-height:1.6}
+    .blog .posts{list-style:none;padding:0}
+    .blog .posts li{padding:1rem 0;border-bottom:1px solid #e5e7eb}
+    .blog .sub{margin-top:2rem;background:#f3f4f6;padding:1rem;border-radius:8px}
+    .blog .sub form{display:flex;gap:.5rem;flex-wrap:wrap}
+    .blog .sub input{flex:1;min-width:200px;padding:.5rem}
+    .blog .ok{color:#15803d;font-weight:600}
+  </style>
+</head>
+<body>
+  <div class="blog">
+    <h1>{{ blog_title }}</h1>
+    {% if subscribed %}<p class="ok">Thanks for subscribing! 🎉</p>{% endif %}
+    {% if not posts %}<p>No posts yet — check back soon.</p>{% endif %}
+    <ul class="posts">
+      {% for p in posts %}
+        <li><a href="/blog/{{ p.slug }}">{{ p.title }}</a>
+          <p>{{ p.summary }}</p></li>
+      {% endfor %}
+    </ul>
+    <div class="sub">
+      <h3>Get new posts &amp; product drops by email</h3>
+      <form method="post" action="/blog/subscribe">
+        <input type="email" name="email" placeholder="you@example.com" required>
+        <button type="submit">Subscribe</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

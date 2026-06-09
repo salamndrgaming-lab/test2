@@ -86,6 +86,30 @@ async def run_agent(name: str):
     return {"ok": True, "name": name, "started": True}
 
 
+# --- blog / audience exports (free hosting + your own email tool) ----------
+@router.post("/blog/export")
+async def blog_export_endpoint():
+    from app.services import blog_export
+    path, count = blog_export.export()
+    return {"ok": True, "count": count, "path": str(path),
+            "hint": "Drag this folder onto app.netlify.com/drop, or commit it to a "
+                    "GitHub Pages repo, to publish your blog for free."}
+
+
+@router.post("/subscribers/export")
+async def subscribers_export():
+    import csv
+    from app.db import database
+    rows = database.query("SELECT email, created_at FROM email_subscribers ORDER BY id")
+    out = config.DATA_DIR / "subscribers.csv"
+    with out.open("w", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        w.writerow(["email", "subscribed_at"])
+        for r in rows:
+            w.writerow([r["email"], r["created_at"]])
+    return {"ok": True, "count": len(rows), "path": str(out)}
+
+
 # --- brain test (used by the onboarding wizard) ----------------------------
 @router.post("/brain/test")
 async def brain_test(prompt: str = Body("Say hello in one short sentence.", embed=True)):
