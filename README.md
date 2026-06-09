@@ -64,14 +64,20 @@ installed (the Settings page tells you if it's missing).
 | Agent | What it does |
 |-------|--------------|
 | **Setup** | Guides one-time signups; stores keys securely. |
-| **Print-on-Demand** | Designs products on Printify; waits for your approval to publish. |
-| **Digital Products** | Writes a real PDF product + cover + listing copy; hands you a one-click flow to list it on Gumroad. |
+| **Print-on-Demand** | Researches demand, designs products, and places **one design on many product types** (tee, mug, sticker, poster) on Printify; waits for your approval to publish them all. |
+| **Digital Products** | Writes a real PDF product + cover + listing copy; hands you a one-click flow to list it on **Gumroad or Etsy**. |
+| **KDP Books** | Designs low/no-content books (journals, planners) with a print-ready interior PDF + cover; hands off to **Amazon KDP**. |
 | **Faceless Video** | Writes a script, voices it locally (Piper TTS), generates scenes, and assembles a captioned vertical MP4 (ffmpeg) ready to upload to YouTube. |
-| **Marketing** | Drafts promo posts + graphics for your live products and hands you a prefilled X/Reddit/Facebook composer — you review and hit Post. |
+| **SEO Blog** | Writes keyword-targeted articles to pull in free organic traffic; on approval they publish to your **public /blog** and export as static HTML for free hosting. |
+| **Marketing** | Drafts promo posts + graphics for your live products and hands you a prefilled **X / Reddit / Facebook / Pinterest / Threads / Bluesky / Tumblr** composer — you review and hit Post. |
+| **Newsletter** | Grows an email list from your blog and drafts broadcasts; exports the draft + recipients for you to send from your own free email tool. |
+| **Optimizer** | Studies your **real** sales and steers the whole team toward what's actually selling (and away from what isn't). |
 | **Bookkeeper** | Pulls **real** sales data only; keeps revenue honest. |
 
-Agents marked *(Milestone …)* are wired in but disabled — we build and switch them
-on together, in order.
+Every agent is **off by default** — switch on the ones you want from the Dashboard.
+Earnings from places without an easy auto-sync (Etsy, KDP, YouTube ad revenue) are
+entered on the **Revenue** page, clearly marked "manually entered" — copied from your
+real payout dashboards, never invented.
 
 ---
 
