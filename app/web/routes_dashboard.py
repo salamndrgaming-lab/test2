@@ -145,6 +145,14 @@ async def blog_post(request: Request, slug: str):
     return templates.TemplateResponse("blog_post.html", {"request": request, "post": post})
 
 
+@router.get("/shelter", response_class=HTMLResponse)
+async def shelter_page(request: Request):
+    ctx = _base_ctx(request)
+    ctx["agents"] = database.query(
+        "SELECT name, display_name, status, enabled FROM agents ORDER BY id")
+    return templates.TemplateResponse("shelter.html", ctx)
+
+
 @router.get("/settings", response_class=HTMLResponse)
 async def settings_page(request: Request):
     ctx = _base_ctx(request)

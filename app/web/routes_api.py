@@ -21,7 +21,8 @@ router = APIRouter(prefix="/api")
 async def state():
     return {
         "agents": {a["name"]: {"enabled": bool(a["enabled"]), "status": a["status"],
-                               "last_run_at": a["last_run_at"]}
+                               "last_run_at": a["last_run_at"],
+                               "last_message": _last_messages().get(a["name"])}
                    for a in _agents_rows()},
         "pending_count": approval.pending_count(),
         "revenue": revenue.totals(),
@@ -33,6 +34,15 @@ async def state():
 def _agents_rows():
     from app.db import database
     return database.query("SELECT * FROM agents ORDER BY id")
+
+
+def _last_messages() -> dict:
+    """Latest activity message per agent, so the Vault view can seed speech bubbles."""
+    from app.db import database
+    rows = database.query(
+        "SELECT agent, message FROM activity_log "
+        "WHERE id IN (SELECT MAX(id) FROM activity_log GROUP BY agent)")
+    return {r["agent"]: r["message"] for r in rows}
 
 
 # --- secrets (onboarding) --------------------------------------------------

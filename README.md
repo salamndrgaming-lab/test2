@@ -86,6 +86,9 @@ real payout dashboards, never invented.
 - **Approvals:** publish/post/spend actions stop and wait for you on the Approvals page.
 - **On/off + Run now:** toggle any agent or trigger it manually from the Dashboard.
 - **Everything is logged:** the live feed shows every action as it happens.
+- **The Vault ☢:** a fun second screen that visualizes your team as little dwellers in a
+  vault — they walk to their work rooms when busy, head to the Vault Door when waiting for
+  your approval, and rest in Quarters when idle. Tap a dweller to run or pause that agent.
 
 ## Privacy & safety
 

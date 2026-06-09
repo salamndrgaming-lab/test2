@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}The Vault — {{ app_name }}{% endblock %}
+{% block content %}
+<div class="vault-wrap">
+  <div class="vault-hud" id="hud">
+    <span class="hud-item">☢ NET <b id="hud-net">$0.00</b></span>
+    <span class="hud-item">⏳ PENDING <b id="hud-pending">0</b></span>
+    <span class="hud-item">🟢 ONLINE <b id="hud-online">0/0</b></span>
+    <span class="hud-item">⚙ RUNNING <b id="hud-running">0</b></span>
+  </div>
+
+  <div class="vault-stage">
+    <canvas id="vault"></canvas>
+    <div class="vault-panel" id="panel" hidden>
+      <button class="panel-x" id="panel-close" aria-label="Close">✕</button>
+      <h3 id="panel-name">Agent</h3>
+      <div class="muted small" id="panel-status">idle</div>
+      <p class="small" id="panel-msg" style="white-space:pre-line"></p>
+      <div class="actions">
+        <button class="btn small primary" id="panel-run">▶ Run now</button>
+        <button class="btn small" id="panel-toggle">Enable</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="muted small vault-legend">
+    Each dweller is an agent. They ride the elevator to their work room when busy, head to
+    the Vault Door when waiting for your approval, and rest in Quarters when idle. Tap a
+    dweller to control it. Drawn live from real agent activity.
+  </p>
+</div>
+
+<style>
+  .vault-wrap { display:flex; flex-direction:column; gap:10px; }
+  .vault-hud {
+    display:flex; gap:16px; flex-wrap:wrap; background:var(--panel);
+    border:1px solid var(--border); border-radius:var(--radius); padding:10px 14px;
+    font-weight:700; color:var(--accent); letter-spacing:.04em;
+  }
+  .vault-hud .hud-item b { color:var(--text); }
+  .vault-stage { position:relative; }
+  #vault {
+    width:100%; display:block; background:#0a0d12; border:1px solid var(--border);
+    border-radius:var(--radius); image-rendering:pixelated; touch-action:manipulation;
+  }
+  .vault-panel {
+    position:absolute; right:12px; top:12px; width:min(260px, 80%);
+    background:var(--panel-2); border:1px solid var(--border); border-radius:var(--radius);
+    padding:12px 14px; box-shadow:0 8px 24px rgba(0,0,0,.5);
+  }
+  .vault-panel h3 { margin:0 0 2px; }
+  .vault-panel .panel-x {
+    position:absolute; right:8px; top:6px; background:none; border:none; color:var(--muted);
+    font-size:16px; cursor:pointer;
+  }
+  .vault-panel .actions { margin-top:10px; display:flex; gap:8px; }
+  .vault-legend { margin:0; }
+</style>
+
+<script>
+  window.VAULT_ROSTER = {{ agents|tojson }};
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/shelter.js"></script>
+{% endblock %}

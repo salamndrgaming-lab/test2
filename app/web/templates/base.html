@@ -11,6 +11,7 @@
   <nav class="nav">
     <span class="brand">🤖 {{ app_name }}</span>
     <a class="tab {% if request.url.path == '/' %}active{% endif %}" href="/">Dashboard</a>
+    <a class="tab {% if request.url.path == '/shelter' %}active{% endif %}" href="/shelter">Vault ☢</a>
     <a class="tab {% if request.url.path == '/approvals' %}active{% endif %}" href="/approvals">
       Approvals<span class="badge" id="pending-badge"
         style="{% if not pending_count %}display:none{% endif %}">{{ pending_count }}</span>
