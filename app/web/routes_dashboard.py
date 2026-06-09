@@ -108,6 +108,9 @@ async def revenue_page(request: Request):
         "totals": revenue.totals(),
         "by_stream": revenue.by_stream(),
         "recent": revenue.recent(),
+        "manual": database.query(
+            "SELECT id, platform, gross_amount, net_amount, occurred_at FROM sales "
+            "WHERE source='manual' ORDER BY id DESC"),
     })
     return templates.TemplateResponse("revenue.html", ctx)
 

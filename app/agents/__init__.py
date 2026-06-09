@@ -14,11 +14,13 @@ from app.agents.bookkeeper_agent import BookkeeperAgent
 from app.agents.optimizer_agent import OptimizerAgent
 from app.agents.blog_agent import BlogAgent
 from app.agents.newsletter_agent import NewsletterAgent
+from app.agents.kdp_agent import KdpAgent
 
 REGISTRY = {
     "onboarding": OnboardingAgent(),
     "pod": PodAgent(),
     "digital": DigitalAgent(),
+    "kdp": KdpAgent(),
     "video": VideoAgent(),
     "blog": BlogAgent(),
     "marketing": MarketingAgent(),

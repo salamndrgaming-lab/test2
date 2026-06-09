@@ -22,6 +22,10 @@
     <a class="btn small" href="{{ ap.payload.handoff_url }}" target="_blank" rel="noopener">
       Open {{ ap.payload.platform or 'store' }} to create the listing ↗</a>
     {% endif %}
+    {% for h in ap.payload.extra_handoffs or [] %}
+    <a class="btn small" href="{{ h.url }}" target="_blank" rel="noopener">
+      Open {{ h.platform }} to create the listing ↗</a>
+    {% endfor %}
   </p>
   {% endif %}
   <div class="actions">

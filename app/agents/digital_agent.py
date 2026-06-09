@@ -17,7 +17,7 @@ from app.agents.base import BaseAgent
 from app.agents.pod_agent import _parse_json
 from app.brain import router as brain
 from app.db import database
-from app.integrations import documents, gumroad, images
+from app.integrations import documents, etsy, gumroad, images
 from app.orchestrator import approval, event_bus
 
 _SYSTEM = (
@@ -74,12 +74,14 @@ class DigitalAgent(BaseAgent):
             (title, json.dumps({"file": file_url, "cover": cover_url, "price_usd": price,
                                 "tags": p.get("tags", []), "type": p.get("product_type")})))
 
+        etsy_tags = etsy.listing_tags(p.get("tags"))
         listing = (
             f"{p.get('listing_description', '').strip()}\n\n"
             f"Type: {p.get('product_type')} · Suggested price: ${price} · "
             f"Tags: {', '.join(p.get('tags', []))}\n\n"
+            f"Etsy tags ({len(etsy_tags)}): {', '.join(etsy_tags)}\n\n"
             "Approve to keep it: download the file below and create the listing on Gumroad "
-            "with this title/description/price. Reject to discard it."
+            "OR Etsy with this title/description/price. Reject to discard it."
         )
         approval.create(
             self.name, "digital_publish",
@@ -87,7 +89,8 @@ class DigitalAgent(BaseAgent):
             summary=listing,
             payload={"db_product_id": db_product_id, "title": title, "price_usd": price,
                      "file_url": file_url, "platform": "Gumroad",
-                     "handoff_url": gumroad.NEW_PRODUCT_URL},
+                     "handoff_url": gumroad.NEW_PRODUCT_URL,
+                     "extra_handoffs": [{"platform": "Etsy", "url": etsy.ADD_LISTING_URL}]},
             preview_url=cover_url)
         self.set_status("waiting_approval")
 

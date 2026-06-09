@@ -13,6 +13,7 @@ from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.pagesizes import LETTER
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
+from reportlab.pdfgen import canvas as _canvas
 from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate, Spacer)
 
 from app import config
@@ -62,4 +63,61 @@ def generate_pdf(title: str, subtitle: str, sections: list[dict],
         flow.append(Spacer(1, 6))
 
     doc.build(flow)
+    return out_path, f"/generated/{name}"
+
+
+# --- low/no-content book interiors (Amazon KDP) ----------------------------
+def _draw_interior_page(c, w: float, h: float, m: float, style: str) -> None:
+    c.setStrokeColorRGB(0.8, 0.8, 0.8)
+    c.setFillColorRGB(0.8, 0.8, 0.8)
+    if style == "blank":
+        return
+    if style == "dot":
+        gap = 0.25 * inch
+        y = m
+        while y < h - m:
+            x = m
+            while x < w - m:
+                c.circle(x, y, 0.6, stroke=0, fill=1)
+                x += gap
+            y += gap
+    elif style == "grid":
+        gap = 0.25 * inch
+        x = m
+        while x <= w - m:
+            c.line(x, m, x, h - m)
+            x += gap
+        y = m
+        while y <= h - m:
+            c.line(m, y, w - m, y)
+            y += gap
+    else:  # lined (default)
+        gap = 0.3 * inch
+        y = m
+        while y <= h - m:
+            c.line(m, y, w - m, y)
+            y += gap
+
+
+def generate_interior(title: str, *, page_style: str = "lined", pages: int = 120,
+                      filename: str | None = None) -> tuple[Path, str]:
+    """Build a print-ready KDP interior PDF (journal/planner/notebook) at 6x9 in.
+
+    `page_style` is one of lined|dot|grid|blank. Returns (absolute_path, web_path).
+    """
+    config.ensure_dirs()
+    name = filename or f"interior_{int(time.time()*1000)}.pdf"
+    out_path = config.GENERATED_DIR / name
+    width, height = 6 * inch, 9 * inch
+    margin = 0.6 * inch
+
+    c = _canvas.Canvas(str(out_path), pagesize=(width, height))
+    c.setTitle(title)
+    c.setFont("Helvetica-Bold", 22)
+    c.drawCentredString(width / 2, height * 0.6, title[:40])
+    c.showPage()
+    for _ in range(max(1, int(pages))):
+        _draw_interior_page(c, width, height, margin, page_style)
+        c.showPage()
+    c.save()
     return out_path, f"/generated/{name}"

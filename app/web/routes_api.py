@@ -86,6 +86,42 @@ async def run_agent(name: str):
     return {"ok": True, "name": name, "started": True}
 
 
+# --- honest manual revenue (Etsy/KDP/YouTube have no easy read API) --------
+@router.post("/revenue/manual")
+async def add_manual_revenue(amount: float = Body(...), label: str = Body("Manual entry"),
+                             fees: float = Body(0.0), occurred_at: str = Body(None)):
+    """Record a REAL sale you copied from a payout dashboard. Tagged source='manual'
+    and visually distinguished from API-synced sales; the bookkeeper never writes these."""
+    import datetime
+    import uuid
+    from app.db import database
+    from app.orchestrator import event_bus
+    try:
+        amount = float(amount)
+        fees = float(fees or 0)
+    except (TypeError, ValueError):
+        return JSONResponse({"error": "Amount and fees must be numbers"}, status_code=400)
+    if amount <= 0:
+        return JSONResponse({"error": "Enter an amount greater than 0"}, status_code=400)
+    occ = (occurred_at or datetime.date.today().isoformat())
+    database.execute(
+        "INSERT INTO sales (product_id, platform, external_id, gross_amount, fees, "
+        "net_amount, occurred_at, source) VALUES (NULL,?,?,?,?,?,?, 'manual')",
+        ((label or "Manual entry")[:60], "manual:" + uuid.uuid4().hex,
+         amount, fees, round(amount - fees, 2), occ))
+    event_bus.emit("revenue_changed")
+    return {"ok": True}
+
+
+@router.delete("/revenue/manual/{sale_id}")
+async def delete_manual_revenue(sale_id: int):
+    from app.db import database
+    from app.orchestrator import event_bus
+    database.execute("DELETE FROM sales WHERE id=? AND source='manual'", (sale_id,))
+    event_bus.emit("revenue_changed")
+    return {"ok": True}
+
+
 # --- blog / audience exports (free hosting + your own email tool) ----------
 @router.post("/blog/export")
 async def blog_export_endpoint():
