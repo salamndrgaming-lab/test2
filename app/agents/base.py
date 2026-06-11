@@ -9,6 +9,7 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 from app.db import database
+from app.memory import memory
 from app.orchestrator import event_bus
 
 
@@ -33,6 +34,19 @@ class BaseAgent:
 
     def log(self, message: str, level: str = "info", payload: dict | None = None) -> None:
         event_bus.log(self.name, message, level=level, payload=payload)
+
+    # --- persistent memory -------------------------------------------------
+    def remember(self, content: str, *, kind: str = "concept",
+                 meta: dict | None = None) -> None:
+        """Record something this agent made/learned, durably across restarts."""
+        memory.remember(self.name, content, kind=kind, meta=meta)
+
+    def recall(self, *, kind: str | None = None, limit: int = 25) -> list[dict]:
+        return memory.recall(self.name, kind=kind, limit=limit)
+
+    def avoid_repeats(self, *, kind: str = "concept", limit: int = 25) -> str:
+        """Prompt fragment listing past creations so the brain makes something new."""
+        return memory.avoid_repeats_clause(self.name, kind=kind, limit=limit)
 
     # --- lifecycle ---------------------------------------------------------
     async def tick(self, *, forced: bool = False) -> None:

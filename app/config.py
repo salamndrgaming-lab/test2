@@ -61,6 +61,7 @@ SECRET_KEYS = {
     "printify_api_token": "Printify API token",
     "gumroad_access_token": "Gumroad access token",
     "pollinations_token": "Pollinations image token (optional)",
+    "huggingface_token": "Hugging Face image token (optional)",
 }
 
 

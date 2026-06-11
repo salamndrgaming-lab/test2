@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Team Memory 🧠</h1>
+<p class="muted">Everything the agents have created so far is remembered here and survives
+  restarts. Before brainstorming, each agent reads its recent memories back so it
+  doesn't repeat itself — the more it makes, the more it diversifies. ({{ total }} remembered)</p>
+
+{% if memories %}
+<div class="card">
+  <table class="table">
+    <thead>
+      <tr><th>When</th><th>Agent</th><th>Kind</th><th>Remembered</th></tr>
+    </thead>
+    <tbody>
+      {% for m in memories %}
+      <tr>
+        <td class="small muted">{{ m.created_at }}</td>
+        <td>{{ m.display_name }}</td>
+        <td class="small muted">{{ m.kind }}</td>
+        <td>{{ m.content }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% else %}
+<div class="card">
+  <p class="muted">Nothing remembered yet. Once an agent runs and invents a concept,
+    it'll show up here — and it won't propose the same thing twice.</p>
+</div>
+{% endif %}
+{% endblock %}

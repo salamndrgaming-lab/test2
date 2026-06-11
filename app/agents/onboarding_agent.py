@@ -59,14 +59,27 @@ WIZARD_STEPS = [
     },
     {
         "key": "pollinations_token",
-        "title": "Image generator token (Pollinations) — free, optional",
-        "why": "Designs still generate without this, but a free token unlocks the "
-               "higher-quality model and removes the small watermark.",
+        "title": "Image generator (Pollinations) — free, needed for designs",
+        "why": "Generates all product/video artwork. Pollinations recently ended its "
+               "anonymous tier, so a free token (no card) is now required for images. "
+               "Add this OR the Hugging Face token below.",
         "url": "https://auth.pollinations.ai",
         "steps": [
             "Open the link and sign in (GitHub works).",
             "Create/copy a token from your dashboard.",
-            "Paste it below. (Leave blank to keep using the free anonymous tier.)",
+            "Paste it below.",
+        ],
+    },
+    {
+        "key": "huggingface_token",
+        "title": "Image generator backup (Hugging Face) — free, optional",
+        "why": "An alternative free image source used automatically if Pollinations "
+               "is unavailable. You only need ONE of the two image tokens.",
+        "url": "https://huggingface.co/settings/tokens",
+        "steps": [
+            "Create a free Hugging Face account (no card).",
+            "Open the link, click 'Create new token' (type: Read).",
+            "Copy the token and paste it below.",
         ],
     },
 ]

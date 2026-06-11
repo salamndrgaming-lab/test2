@@ -45,10 +45,11 @@ class DigitalAgent(BaseAgent):
         self.log("Writing a new digital product…")
         reply = await brain.generate(
             "Create one genuinely useful, sellable digital product for a specific niche audience. "
-            "Make the section bodies substantive and practical, not filler.",
+            "Make the section bodies substantive and practical, not filler." + self.avoid_repeats(),
             system=_SYSTEM, task="reasoning")
         p = _parse_json(reply)
         title = p["title"].strip()[:70]
+        self.remember(title, meta={"niche": p.get("niche")})
         subtitle = (p.get("subtitle") or "").strip()
         price = int(p.get("price_usd", 9))
         sections = p.get("sections", [])

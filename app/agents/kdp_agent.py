@@ -45,9 +45,11 @@ class KdpAgent(BaseAgent):
 
         self.log("Designing a low-content KDP book…")
         p = _parse_json(await brain.generate(
-            "Design one low-content KDP book people in a specific niche would buy.",
+            "Design one low-content KDP book people in a specific niche would buy."
+            + self.avoid_repeats(),
             system=_SYSTEM, task="reasoning"))
         title = (p.get("title") or "Untitled").strip()[:70]
+        self.remember(title, meta={"niche": p.get("niche")})
         style = p.get("page_style") if p.get("page_style") in _STYLES else "lined"
         pages = max(100, min(int(p.get("pages", 120)), 200))
 

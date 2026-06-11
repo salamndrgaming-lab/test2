@@ -70,9 +70,11 @@ class BlogAgent(BaseAgent):
         self.log(f"Writing an SEO article about: {subject}")
 
         data = _parse_json(await brain.generate(
-            f"Write a blog article that would attract buyers interested in: {subject}.",
+            f"Write a blog article that would attract buyers interested in: {subject}."
+            + self.avoid_repeats(),
             system=_SYSTEM, task="bulk"))
         title = (data.get("title") or subject).strip()[:120]
+        self.remember(title, meta={"subject": subject})
         product_title = product["title"] if product else None
         body_html = _render_body(data, product_title)
         slug = self._unique_slug(_slugify(title))

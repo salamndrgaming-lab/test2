@@ -121,6 +121,8 @@ class PodAgent(BaseAgent):
                 f"Invent one fresh, marketable product concept for this niche: "
                 f"{brief.get('niche')} (audience: {brief.get('audience')}). "
                 f"Angle: {brief.get('product_angle')}. Lean into these keywords: {kws}.")
+        # Persistent memory: never re-pitch a concept we've already made.
+        user_prompt += self.avoid_repeats()
 
         concept = _parse_json(await brain.generate(user_prompt, system=_CONCEPT_SYSTEM,
                                                    task="reasoning"))
@@ -128,6 +130,7 @@ class PodAgent(BaseAgent):
         description = concept["description"].strip()
         design_prompt = concept["design_prompt"].strip()
         niche = concept.get("niche") or (brief.get("niche") if brief else None)
+        self.remember(title, meta={"niche": niche, "tags": concept.get("tags")})
         self.log(f"Concept: {title}", level="success",
                  payload={"niche": niche, "tags": concept.get("tags")})
 

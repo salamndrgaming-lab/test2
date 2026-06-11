@@ -46,10 +46,12 @@ class VideoAgent(BaseAgent):
 
         self.log("Writing a short video script…")
         reply = await brain.generate(
-            "Create one engaging, genuinely informative faceless Short for a niche audience.",
+            "Create one engaging, genuinely informative faceless Short for a niche audience."
+            + self.avoid_repeats(),
             system=_SYSTEM, task="reasoning")
         p = _parse_json(reply)
         title = p["title"].strip()[:70]
+        self.remember(title, meta={"topic": p.get("topic")})
         narration = (p.get("narration") or "").strip()
         scene_specs = p.get("scenes", [])
         if not narration or not scene_specs:

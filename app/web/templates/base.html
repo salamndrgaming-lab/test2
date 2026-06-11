@@ -17,6 +17,7 @@
         style="{% if not pending_count %}display:none{% endif %}">{{ pending_count }}</span>
     </a>
     <a class="tab {% if request.url.path == '/revenue' %}active{% endif %}" href="/revenue">Revenue</a>
+    <a class="tab {% if request.url.path == '/memory' %}active{% endif %}" href="/memory">Memory 🧠</a>
     <a class="tab" href="/blog" target="_blank" rel="noopener">Blog ↗</a>
     <a class="tab {% if request.url.path == '/settings' %}active{% endif %}" href="/settings">Settings</a>
     <a class="tab" href="/logout">Log out</a>

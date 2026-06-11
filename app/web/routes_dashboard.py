@@ -9,6 +9,7 @@ from app import config
 from app.agents import REGISTRY
 from app.agents.onboarding_agent import OnboardingAgent
 from app.db import database
+from app.memory import memory
 from app.orchestrator import approval
 from app.remote import tunnel
 from app.services import quota, revenue
@@ -152,6 +153,18 @@ async def shelter_page(request: Request):
     ctx["agents"] = database.query(
         "SELECT name, display_name, status, enabled FROM agents ORDER BY id")
     return templates.TemplateResponse("shelter.html", ctx)
+
+
+@router.get("/memory", response_class=HTMLResponse)
+async def memory_page(request: Request):
+    ctx = _base_ctx(request)
+    rows = memory.recall(limit=200)
+    names = {a["name"]: a["display_name"]
+             for a in database.query("SELECT name, display_name FROM agents")}
+    for r in rows:
+        r["display_name"] = names.get(r["agent"], r["agent"])
+    ctx.update({"memories": rows, "total": memory.count()})
+    return templates.TemplateResponse("memory.html", ctx)
 
 
 @router.get("/settings", response_class=HTMLResponse)

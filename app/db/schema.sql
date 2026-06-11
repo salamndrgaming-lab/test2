@@ -127,6 +127,20 @@ CREATE TABLE IF NOT EXISTS blog_posts (
     published_at  TEXT
 );
 
+-- Persistent agent memory: what each agent has created/learned, surviving
+-- restarts. Creative agents record every concept here and read recent entries
+-- back so they don't repeat themselves and can build on what came before.
+CREATE TABLE IF NOT EXISTS agent_memory (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    agent      TEXT NOT NULL,
+    kind       TEXT NOT NULL DEFAULT 'concept',  -- concept|note|learning
+    content    TEXT NOT NULL,                     -- short human-readable memory (e.g. a title)
+    meta_json  TEXT,                              -- optional structured context
+    created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_agent_memory_lookup
+    ON agent_memory (agent, kind, created_at DESC);
+
 -- Email list captured from the public blog (an owned audience you can promote to).
 -- The newsletter agent drafts broadcasts; you send them from your own email tool.
 CREATE TABLE IF NOT EXISTS email_subscribers (
