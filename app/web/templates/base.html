@@ -6,7 +6,7 @@
   <title>{% block title %}{{ app_name }}{% endblock %}</title>
   <link rel="stylesheet" href="/static/style.css">
 </head>
-<body>
+<body{% if authed %} data-authed="1"{% endif %}>
   {% block nav %}
   <nav class="nav">
     <span class="brand">🤖 {{ app_name }}</span>

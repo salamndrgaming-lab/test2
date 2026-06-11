@@ -231,7 +231,9 @@
     var proto = location.protocol === "https:" ? "wss" : "ws";
     var sock = new WebSocket(proto + "://" + location.host + "/ws");
     sock.onmessage = function (m) { try { onEvent(JSON.parse(m.data)); } catch (e) {} };
-    sock.onclose = function () { setTimeout(connect, 2500); };
+    sock.onclose = function () {
+      if (document.body.dataset.authed === "1") setTimeout(connect, 2500);
+    };
   }
 
   // --- interactivity --------------------------------------------------------
@@ -278,7 +280,6 @@
     var dt = Math.min(0.05, (now - last) / 1000); last = now;
     update(dt); render(); requestAnimationFrame(loop);
   }
-  fetchState();
-  connect();
+  if (document.body.dataset.authed === "1") { fetchState(); connect(); }
   requestAnimationFrame(loop);
 })();

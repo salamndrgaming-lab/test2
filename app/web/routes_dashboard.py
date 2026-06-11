@@ -25,6 +25,7 @@ def _base_ctx(request: Request) -> dict:
         "request": request,
         "app_name": config.APP_NAME,
         "pending_count": approval.pending_count(),
+        "authed": auth.is_authed(request),
     }
 
 

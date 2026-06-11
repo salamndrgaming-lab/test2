@@ -73,7 +73,11 @@
         }
       }
     };
-    sock.onclose = function () { setTimeout(connect, 2500); };
+    // Only keep retrying while we're logged in (avoids 403 spam on the login page
+    // or after logout/session expiry).
+    sock.onclose = function () {
+      if (document.body.dataset.authed === "1") setTimeout(connect, 2500);
+    };
   }
 
   // ---- action wiring (event delegation) ------------------------------------
@@ -113,6 +117,9 @@
   });
 
   document.addEventListener("DOMContentLoaded", function () {
+    // Don't open the live feed until the user is logged in — the login / set-PIN
+    // pages share this script, and an unauthenticated /ws is correctly rejected.
+    if (document.body.dataset.authed !== "1") return;
     connect();
     refreshState();
   });
