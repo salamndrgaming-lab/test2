@@ -57,6 +57,18 @@ WIZARD_STEPS = [
             "Generate an access token for it, copy the token, and paste it below.",
         ],
     },
+    {
+        "key": "pollinations_token",
+        "title": "Image generator token (Pollinations) — free, optional",
+        "why": "Designs still generate without this, but a free token unlocks the "
+               "higher-quality model and removes the small watermark.",
+        "url": "https://auth.pollinations.ai",
+        "steps": [
+            "Open the link and sign in (GitHub works).",
+            "Create/copy a token from your dashboard.",
+            "Paste it below. (Leave blank to keep using the free anonymous tier.)",
+        ],
+    },
 ]
 
 

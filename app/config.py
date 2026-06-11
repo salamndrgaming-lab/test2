@@ -60,6 +60,7 @@ SECRET_KEYS = {
     "groq_api_key": "Groq API key",
     "printify_api_token": "Printify API token",
     "gumroad_access_token": "Gumroad access token",
+    "pollinations_token": "Pollinations image token (optional)",
 }
 
 
