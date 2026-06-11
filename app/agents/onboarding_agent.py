@@ -59,10 +59,10 @@ WIZARD_STEPS = [
     },
     {
         "key": "pollinations_token",
-        "title": "Image generator (Pollinations) — free, needed for designs",
-        "why": "Generates all product/video artwork. Pollinations recently ended its "
-               "anonymous tier, so a free token (no card) is now required for images. "
-               "Add this OR the Hugging Face token below.",
+        "title": "Image generator (Pollinations) — free, optional (recommended)",
+        "why": "Generates AI artwork for products/videos. Optional: without any image "
+               "token, designs fall back to a clean built-in typographic style — add a "
+               "free token (no card) for full AI artwork. This OR the Hugging Face token.",
         "url": "https://auth.pollinations.ai",
         "steps": [
             "Open the link and sign in (GitHub works).",

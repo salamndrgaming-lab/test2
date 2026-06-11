@@ -158,9 +158,12 @@ async def subscribers_export():
 
 # --- brain test (used by the onboarding wizard) ----------------------------
 @router.post("/brain/test")
-async def brain_test(prompt: str = Body("Say hello in one short sentence.", embed=True)):
+async def brain_test(prompt: str = Body("Say hello in one short sentence.", embed=True),
+                     provider: str | None = Body(None, embed=True)):
+    """Test the brain. `provider` ("gemini"/"groq") forces one, so the user can
+    confirm the backup works; omitted = normal failover routing."""
     try:
-        reply = await brain.generate(prompt, task="bulk")
-        return {"ok": True, "reply": reply}
+        used, reply = await brain.generate_detailed(prompt, task="bulk", only=provider)
+        return {"ok": True, "reply": reply, "provider": used}
     except BrainError as exc:
         return JSONResponse({"ok": False, "error": str(exc)}, status_code=400)

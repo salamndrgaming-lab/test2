@@ -72,7 +72,7 @@ class MarketingAgent(BaseAgent):
             self.log("Generating a promo graphic…")
             _, image_url = await images.generate(
                 p.get("image_prompt", f"eye-catching promo graphic for '{title}'"),
-                width=1024, height=1024)
+                width=1024, height=1024, text=title, transparent=False)
         except Exception as exc:
             self.log(f"Promo graphic skipped ({exc}). Post still ready.", level="warn")
 

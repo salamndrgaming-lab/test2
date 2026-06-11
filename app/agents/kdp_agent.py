@@ -61,7 +61,7 @@ class KdpAgent(BaseAgent):
             self.log("Generating a cover image…")
             _, cover_url = await images.generate(
                 p.get("cover_prompt", f"clean 6x9 book cover artwork for '{title}', no text"),
-                width=1024, height=1536)
+                width=1024, height=1536, text=title, transparent=False)
         except Exception as exc:
             self.log(f"Cover image skipped ({exc}). Book still ready.", level="warn")
 

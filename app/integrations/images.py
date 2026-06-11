@@ -8,9 +8,11 @@ try whatever the user has connected, in order:
   1. Pollinations (token)        — free token from https://auth.pollinations.ai
   2. Hugging Face (token)        — free token from https://huggingface.co/settings/tokens
   3. Pollinations (anonymous)    — last-ditch, in case a tier still allows it
+  4. Local keyless design        — offline Pillow typographic render (always works)
 
-Both tokens are free (no credit card). The user only needs ONE of them. If none
-is configured and the anonymous attempt fails, we raise a clear, actionable error.
+Both tokens are free (no credit card). The user only needs ONE for AI artwork; if
+none is configured (or all online attempts fail) we fall back to the local keyless
+designer so the pipeline never stalls. See app/integrations/local_art.py.
 
 Saves PNGs into data/generated/ and returns (absolute_path, web_path).
 """
@@ -23,6 +25,8 @@ from pathlib import Path
 import httpx
 
 from app import config
+from app.integrations import local_art
+from app.orchestrator import event_bus
 from app.vault import vault
 
 _POLLI = "https://image.pollinations.ai/prompt/"
@@ -60,8 +64,33 @@ def _describe(resp) -> str:
     return f"HTTP {resp.status_code} ({resp.headers.get('content-type', 'no content-type')})"
 
 
+def _phrase_from_prompt(prompt: str) -> str:
+    """Derive a short, human phrase from an image prompt for the keyless fallback,
+    dropping art-direction filler so the rendered text reads like a real design."""
+    filler = {"a", "an", "the", "of", "for", "with", "and", "on", "in", "minimalist",
+              "vector", "graphic", "design", "illustration", "clean", "modern", "art",
+              "artwork", "background", "transparent", "plain", "style", "high", "quality"}
+    words = [w for w in prompt.replace(",", " ").split() if w.lower() not in filler]
+    return " ".join(words[:6]) or prompt[:40]
+
+
+def _save(content: bytes, filename: str | None) -> tuple[Path, str]:
+    name = filename or f"design_{int(time.time()*1000)}.png"
+    out_path = config.GENERATED_DIR / name
+    out_path.write_bytes(content)
+    return out_path, f"/generated/{name}"
+
+
 async def generate(prompt: str, *, width: int = 1024, height: int = 1024,
-                   model: str = "flux", filename: str | None = None) -> tuple[Path, str]:
+                   model: str = "flux", filename: str | None = None,
+                   text: str | None = None, transparent: bool = True) -> tuple[Path, str]:
+    """Generate an image, trying online providers then a keyless local design.
+
+    `text` is the phrase to render if we fall back to the local generator (e.g. the
+    product title); when omitted it's derived from `prompt`. `transparent` controls
+    the local fallback only (True = text-on-transparent for merch, False = gradient
+    background for video scenes). This never raises for lack of a token.
+    """
     config.ensure_dirs()
     polli_token = vault.get_secret("pollinations_token")
     hf_token = vault.get_secret("huggingface_token")
@@ -86,13 +115,16 @@ async def generate(prompt: str, *, width: int = 1024, height: int = 1024,
                 last = f"{label}: network error: {e}"
                 continue
             if content:
-                name = filename or f"design_{int(time.time()*1000)}.png"
-                out_path = config.GENERATED_DIR / name
-                out_path.write_bytes(content)
-                return out_path, f"/generated/{name}"
+                return _save(content, filename)
             last = f"{label}: {info}"
 
-    raise RuntimeError(
-        f"Image generation failed ({last}). Free image generators now require a free "
-        "token — add ONE in Settings: Pollinations (auth.pollinations.ai) or Hugging "
-        "Face (huggingface.co/settings/tokens). No credit card needed.")
+    # Keyless, offline last resort — always succeeds so the pipeline never stalls.
+    try:
+        event_bus.log("images",
+                      "Online image generators unavailable — used a built-in keyless design. "
+                      "Add a free image token in Settings for AI artwork.", level="warn")
+    except Exception:
+        pass
+    content = local_art.render_text_design(text or _phrase_from_prompt(prompt),
+                                            width=width, height=height, transparent=transparent)
+    return _save(content, filename)

@@ -29,7 +29,11 @@ async def generate(prompt: str, system: str | None = None, *, model: str | None 
         body["systemInstruction"] = {"parts": [{"text": system}]}
 
     async with httpx.AsyncClient(timeout=90) as client:
-        resp = await client.post(_URL.format(model=model), params={"key": key}, json=body)
+        try:
+            resp = await client.post(_URL.format(model=model), params={"key": key}, json=body)
+        except httpx.HTTPError as exc:
+            # Timeouts / connection drops must be catchable so the router fails over.
+            raise BrainError(f"Gemini network error: {exc}") from exc
 
     if resp.status_code == 429:
         raise RateLimited("Gemini rate limit hit")

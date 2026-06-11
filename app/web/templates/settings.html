@@ -31,8 +31,12 @@
 
 <div class="card">
   <h2>Test the AI brain</h2>
-  <p class="muted small">Confirms a brain key works. Sends one short prompt.</p>
-  <button class="btn" onclick="testBrain()">Send test prompt</button>
+  <p class="muted small">Confirms a brain works and shows which one answered. The backup
+    button forces Groq, so you can verify failover is ready.</p>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <button class="btn" onclick="testBrain()">Send test prompt</button>
+    <button class="btn" onclick="testBrain('groq')">Test backup brain (Groq)</button>
+  </div>
   <div class="small" id="brain_msg" style="margin-top:10px;"></div>
 </div>
 
@@ -67,12 +71,15 @@ async function removeSecret(key) {
   await window.api("DELETE", "/api/secret/" + key);
   location.reload();
 }
-async function testBrain() {
+async function testBrain(provider) {
   const msg = document.getElementById("brain_msg");
-  msg.textContent = "Thinking…";
+  msg.textContent = provider ? "Testing " + provider + "…" : "Thinking…";
   try {
-    const r = await window.api("POST", "/api/brain/test", { prompt: "Say hello in one short sentence." });
-    msg.innerHTML = '<span style="color:var(--accent)">Brain replied:</span> ' +
+    const body = { prompt: "Say hello in one short sentence." };
+    if (provider) body.provider = provider;
+    const r = await window.api("POST", "/api/brain/test", body);
+    const who = r.provider ? (r.provider.charAt(0).toUpperCase() + r.provider.slice(1)) : "Brain";
+    msg.innerHTML = '<span style="color:var(--accent)">' + who + ' replied:</span> ' +
       (r.reply || "").replace(/</g, "&lt;");
   } catch (e) {
     msg.innerHTML = '<span style="color:var(--error)">' + e.message + '</span>';

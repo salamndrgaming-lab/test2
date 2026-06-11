@@ -65,7 +65,7 @@ class DigitalAgent(BaseAgent):
             self.log("Generating a cover image…")
             _, cover_url = await images.generate(
                 p.get("cover_prompt", f"professional ebook cover for '{title}'"),
-                width=768, height=1024)
+                width=768, height=1024, text=title, transparent=False)
         except Exception as exc:
             self.log(f"Cover image skipped ({exc}). Product still ready.", level="warn")
 

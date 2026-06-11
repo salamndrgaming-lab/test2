@@ -50,23 +50,20 @@ def test_memory_page_renders_authed():
     print("  ok: /memory page renders entries when authed")
 
 
-def test_image_fallback_raises_clear_error_without_tokens():
-    # No tokens configured and (in tests) no network → must raise an actionable error
-    # that points the user at the free token providers, not a raw HTTP/stack trace.
-    try:
-        asyncio.run(images.generate("a red apple", width=64, height=64))
-    except RuntimeError as e:
-        msg = str(e)
-        assert "token" in msg.lower(), msg
-        assert "auth.pollinations.ai" in msg and "huggingface.co" in msg, msg
-        print("  ok: image generation fails with a clear, actionable token message")
-        return
-    print("  ok: image generation unexpectedly succeeded (network available) — fine")
+def test_image_falls_back_to_local_design_without_tokens():
+    # No tokens configured → online attempts fail, but the keyless local designer
+    # always produces a real PNG so the pipeline never stalls (M11 covers this in
+    # depth; here we just confirm M10's expectation flipped from raise -> succeed).
+    path, web = asyncio.run(images.generate("a red apple", width=64, height=64,
+                                            text="Red Apple"))
+    assert path.exists() and path.read_bytes()[:8] == b"\x89PNG\r\n\x1a\n", path
+    assert web.startswith("/generated/"), web
+    print("  ok: image generation falls back to a local keyless PNG (no token needed)")
 
 
 if __name__ == "__main__":
     test_memory_persists_and_recalls()
     test_avoid_repeats_clause_scoped_per_agent()
     test_memory_page_renders_authed()
-    test_image_fallback_raises_clear_error_without_tokens()
+    test_image_falls_back_to_local_design_without_tokens()
     print("\nALL M10 TESTS PASSED")

@@ -26,11 +26,15 @@ async def generate(prompt: str, system: str | None = None, *, model: str | None 
     messages.append({"role": "user", "content": prompt})
 
     async with httpx.AsyncClient(timeout=90) as client:
-        resp = await client.post(
-            _URL,
-            headers={"Authorization": f"Bearer {key}"},
-            json={"model": model, "messages": messages},
-        )
+        try:
+            resp = await client.post(
+                _URL,
+                headers={"Authorization": f"Bearer {key}"},
+                json={"model": model, "messages": messages},
+            )
+        except httpx.HTTPError as exc:
+            # Timeouts / connection drops must be catchable so the router fails over.
+            raise BrainError(f"Groq network error: {exc}") from exc
 
     if resp.status_code == 429:
         raise RateLimited("Groq rate limit hit")

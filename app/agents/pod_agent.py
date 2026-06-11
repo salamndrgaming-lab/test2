@@ -135,7 +135,7 @@ class PodAgent(BaseAgent):
                  payload={"niche": niche, "tags": concept.get("tags")})
 
         self.log("Generating the design artwork…")
-        img_path, web_path = await images.generate(design_prompt)
+        img_path, web_path = await images.generate(design_prompt, text=title)
         image_id = await printify.upload_image(img_path)  # upload the design ONCE
 
         self.log(f"Placing the design on {len(blueprint_specs)} product types…")

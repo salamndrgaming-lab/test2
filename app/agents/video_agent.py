@@ -75,7 +75,8 @@ class VideoAgent(BaseAgent):
         for i, spec in enumerate(scene_specs):
             try:
                 img_path, _ = await images.generate(
-                    spec.get("image_prompt", title), width=720, height=1280)
+                    spec.get("image_prompt", title), width=720, height=1280,
+                    text=spec.get("caption") or title, transparent=False)
                 scenes.append({"image": img_path, "caption": spec.get("caption", "")})
             except Exception as exc:
                 self.log(f"Scene {i+1} image failed ({exc}) — skipping it.", level="warn")

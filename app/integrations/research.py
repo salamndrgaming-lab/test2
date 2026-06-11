@@ -87,6 +87,28 @@ async def reddit_hot(subreddits: list[str] | None = None, limit: int = 8) -> lis
     return out
 
 
+async def hacker_news(limit: int = 15) -> list[str]:
+    """Top Hacker News story titles (keyless Firebase API, best-effort)."""
+    try:
+        async with httpx.AsyncClient(timeout=20, headers=_UA, follow_redirects=True) as c:
+            r = await c.get("https://hacker-news.firebaseio.com/v0/topstories.json")
+            r.raise_for_status()
+            ids = r.json()[:limit]
+            out: list[str] = []
+            for sid in ids:
+                try:
+                    item = await c.get(
+                        f"https://hacker-news.firebaseio.com/v0/item/{sid}.json")
+                    title = item.json().get("title")
+                    if title:
+                        out.append(title.strip())
+                except Exception:
+                    continue
+            return out
+    except Exception:
+        return []
+
+
 def latest_optimizer_hint() -> str | None:
     """Most recent optimizer brief, used to bias new research toward proven winners."""
     row = database.query_one(
@@ -121,6 +143,10 @@ async def demand_brief() -> dict | None:
     if reddit:
         signals += reddit
         sources.append("reddit")
+    hn = await hacker_news()
+    if hn:
+        signals += hn
+        sources.append("hn")
 
     source = "+".join(sources) if sources else "brain_only"
     hint = latest_optimizer_hint()
