@@ -48,4 +48,8 @@ def export() -> tuple[Path, int]:
         '<?xml version="1.0" encoding="UTF-8"?>'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'
         f"{urls}</urlset>", encoding="utf-8")
+
+    # Make the exported folder directly deployable to Vercel (static, clean URLs).
+    (out / "vercel.json").write_text(
+        '{\n  "cleanUrls": true,\n  "trailingSlash": false\n}\n', encoding="utf-8")
     return out, len(posts)

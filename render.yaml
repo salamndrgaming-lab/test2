@@ -1,0 +1,22 @@
+# Render Blueprint — deploys the FULL engine 24/7 with a persistent disk.
+# Use via render.com → New → Blueprint → point at this repo (or the "Deploy to Render"
+# button in DEPLOY.md). The Starter plan is required for the persistent disk that holds
+# your database, encrypted vault, and generated files.
+services:
+  - type: web
+    name: ai-income-team
+    runtime: docker
+    plan: starter            # persistent disks require a paid instance (~$7/mo)
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: AIT_DATA_DIR
+        value: /data
+      - key: AIT_HOST
+        value: 0.0.0.0
+      - key: AIT_NO_TUNNEL
+        value: "1"
+    disk:
+      name: ait-data         # SQLite + encrypted vault + generated PDFs/images/videos
+      mountPath: /data
+      sizeGB: 1

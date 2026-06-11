@@ -1,0 +1,12 @@
+# Build artifacts / local runtime — never needed in the image.
+.git
+.gitignore
+.venv
+data
+tests
+**/__pycache__
+**/*.pyc
+*.md
+vercel-blog
+vercel.json
+.vercel
