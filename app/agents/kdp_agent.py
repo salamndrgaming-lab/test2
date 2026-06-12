@@ -47,7 +47,7 @@ class KdpAgent(BaseAgent):
         p = _parse_json(await brain.generate(
             "Design one low-content KDP book people in a specific niche would buy."
             + self.avoid_repeats(),
-            system=_SYSTEM, task="reasoning"))
+            system=self.mission_system(_SYSTEM), task="reasoning"))
         title = (p.get("title") or "Untitled").strip()[:70]
         self.remember(title, meta={"niche": p.get("niche")})
         style = p.get("page_style") if p.get("page_style") in _STYLES else "lined"
@@ -93,5 +93,6 @@ class KdpAgent(BaseAgent):
         database.execute("UPDATE products SET status='live' WHERE id=?", (d["db_product_id"],))
         self.log(f"'{d['title']}' marked live. Upload it on KDP with the interior & copy "
                  "provided.", level="success")
+        self.record_win(f"Published KDP book '{d['title']}'")
         self.set_status("idle")
         event_bus.emit("products_changed")

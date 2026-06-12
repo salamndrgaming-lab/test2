@@ -19,10 +19,13 @@ from app.db import database
 from app.services import revenue
 
 _BRIEF_SYSTEM = (
-    "You are a growth analyst. Given which products and niches actually sold, propose "
-    "the single best niche/direction to make MORE of next. Respond with ONLY a JSON "
-    "object, no prose, no markdown fences. Keys: niche (string), audience (string), "
-    "product_angle (string), keywords (array of 6-10 short SEO phrases)."
+    "You are a ruthless growth analyst. Real sales are the only truth: given which products "
+    "and niches actually sold, double down — same buyer, adjacent designs, the same proven "
+    "angle pushed harder. Propose the single best direction to make MORE of next, and name "
+    "what weakness in the market those sales exposed. Respond with ONLY a JSON object, no "
+    "prose, no markdown fences. Keys: niche (string), audience (string), product_angle "
+    "(string: the proven angle and how to press the advantage), keywords (array of 6-10 "
+    "long-tail phrases buyers search)."
 )
 
 
@@ -69,7 +72,8 @@ class OptimizerAgent(BaseAgent):
             prompt = ("These products sold best:\n- " + "\n- ".join(top_lines) +
                       (f"\n\nWinning niches: {', '.join(niches)}." if niches else ""))
             try:
-                brief = _parse_json(await brain.generate(prompt, system=_BRIEF_SYSTEM, task="bulk"))
+                brief = _parse_json(await brain.generate(
+                    prompt, system=self.mission_system(_BRIEF_SYSTEM), task="bulk"))
                 database.execute(
                     "INSERT INTO demand_briefs (source, niche, audience, product_angle, "
                     "keywords_json) VALUES ('optimizer',?,?,?,?)",

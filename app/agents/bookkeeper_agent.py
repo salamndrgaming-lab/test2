@@ -29,6 +29,8 @@ class BookkeeperAgent(BaseAgent):
 
         if new_count:
             self.log(f"Recorded {new_count} new real sale(s).", level="success")
+            self.record_win(f"{new_count} real sale(s) landed — money in the bank",
+                            meta={"sales": new_count})
             event_bus.emit("revenue_changed")
         else:
             self.log("No new sales since last check.", level="info")

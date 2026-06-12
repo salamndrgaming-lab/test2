@@ -59,7 +59,7 @@ class MarketingAgent(BaseAgent):
         reply = await brain.generate(
             f"Write one promotional social post for this product.\n"
             f"Product: {title}\nType: {product['stream']}",
-            system=_SYSTEM, task="reasoning")
+            system=self.mission_system(_SYSTEM), task="reasoning")
         p = _parse_json(reply)
         post_text = (p.get("post_text") or "").strip()
         if not post_text:

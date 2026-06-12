@@ -72,7 +72,7 @@ class BlogAgent(BaseAgent):
         data = _parse_json(await brain.generate(
             f"Write a blog article that would attract buyers interested in: {subject}."
             + self.avoid_repeats(),
-            system=_SYSTEM, task="bulk"))
+            system=self.mission_system(_SYSTEM), task="bulk"))
         title = (data.get("title") or subject).strip()[:120]
         self.remember(title, meta={"subject": subject})
         product_title = product["title"] if product else None
@@ -108,5 +108,6 @@ class BlogAgent(BaseAgent):
             "UPDATE blog_posts SET status='published', published_at=? WHERE id=?",
             (datetime.now(timezone.utc).isoformat(), p["post_id"]))
         self.log(f"Blog post '{p['title']}' is live at /blog/{p['slug']}.", level="success")
+        self.record_win(f"Published blog post '{p['title']}'")
         self.set_status("idle")
         event_bus.emit("products_changed")

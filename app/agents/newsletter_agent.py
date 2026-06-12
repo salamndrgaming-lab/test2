@@ -53,7 +53,7 @@ class NewsletterAgent(BaseAgent):
         product_lines = "\n".join(f"- {p['title']} ({p['stream']})" for p in live)
         data = _parse_json(await brain.generate(
             f"Write a newsletter promoting these products:\n{product_lines}",
-            system=_SYSTEM, task="bulk"))
+            system=self.mission_system(_SYSTEM), task="bulk"))
         subject = (data.get("subject") or "News from us").strip()
         body = (data.get("body") or "").strip()
         if not body:

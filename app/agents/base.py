@@ -48,6 +48,17 @@ class BaseAgent:
         """Prompt fragment listing past creations so the brain makes something new."""
         return memory.avoid_repeats_clause(self.name, kind=kind, limit=limit)
 
+    # --- mission / drive -----------------------------------------------------
+    def mission_system(self, base_system: str) -> str:
+        """Wrap a role prompt with the team's goal, playbook, and dopamine ledger."""
+        from app.brain import mission
+        return mission.compose(self.name, base_system)
+
+    def record_win(self, what: str, meta: dict | None = None) -> None:
+        """A success happened (publish/sale). Bank the dopamine and remember the pattern."""
+        memory.remember(self.name, what, kind="win", meta=meta)
+        self.log(f"+1 dopamine — WIN banked: {what}", level="success", payload=meta)
+
     # --- lifecycle ---------------------------------------------------------
     async def tick(self, *, forced: bool = False) -> None:
         """Run one cycle if enabled (or forced via the dashboard 'Run now' button)."""

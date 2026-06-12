@@ -136,8 +136,8 @@ class PodAgent(BaseAgent):
         # Persistent memory: never re-pitch a concept we've already made.
         user_prompt += self.avoid_repeats()
 
-        concept = _parse_json(await brain.generate(user_prompt, system=_CONCEPT_SYSTEM,
-                                                   task="reasoning"))
+        concept = _parse_json(await brain.generate(
+            user_prompt, system=self.mission_system(_CONCEPT_SYSTEM), task="reasoning"))
         title = concept["product_title"].strip()[:60]
         description = concept["description"].strip()
         design_prompt = concept["design_prompt"].strip()
@@ -195,5 +195,7 @@ class PodAgent(BaseAgent):
                                  (item["db_product_id"],))
             published += 1
         self.log(f"'{p.get('title')}' is now live ({published} products).", level="success")
+        self.record_win(f"Published '{p.get('title')}' ({published} products live)",
+                        meta={"products": published})
         self.set_status("idle")
         event_bus.emit("products_changed")

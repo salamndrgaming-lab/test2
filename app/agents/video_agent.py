@@ -48,7 +48,7 @@ class VideoAgent(BaseAgent):
         reply = await brain.generate(
             "Create one engaging, genuinely informative faceless Short for a niche audience."
             + self.avoid_repeats(),
-            system=_SYSTEM, task="reasoning")
+            system=self.mission_system(_SYSTEM), task="reasoning")
         p = _parse_json(reply)
         title = p["title"].strip()[:70]
         self.remember(title, meta={"topic": p.get("topic")})
@@ -118,5 +118,6 @@ class VideoAgent(BaseAgent):
         database.execute("UPDATE products SET status='live' WHERE id=?", (d["db_product_id"],))
         self.log(f"'{d['title']}' marked live. Download it and upload to YouTube.",
                  level="success")
+        self.record_win(f"Published video '{d['title']}'")
         self.set_status("idle")
         event_bus.emit("products_changed")

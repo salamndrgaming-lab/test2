@@ -87,5 +87,10 @@ async def resolve(approval_id: int, status: str, by: str = "you") -> dict | None
                           f"No handler registered for '{row['action_type']}'.", level="warn")
     else:
         event_bus.log(row["agent"], f"You rejected: {row['title']}", level="info")
+        # Negative signal: remember the rejection so the agent stops pitching
+        # this direction (recalled alongside concepts in avoid-repeats prompts).
+        from app.memory import memory
+        memory.remember(row["agent"], f"REJECTED by owner: {row['title']}",
+                        kind="learning", meta={"action_type": row["action_type"]})
 
     return get(approval_id)

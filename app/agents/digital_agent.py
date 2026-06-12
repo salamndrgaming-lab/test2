@@ -46,7 +46,7 @@ class DigitalAgent(BaseAgent):
         reply = await brain.generate(
             "Create one genuinely useful, sellable digital product for a specific niche audience. "
             "Make the section bodies substantive and practical, not filler." + self.avoid_repeats(),
-            system=_SYSTEM, task="reasoning")
+            system=self.mission_system(_SYSTEM), task="reasoning")
         p = _parse_json(reply)
         title = p["title"].strip()[:70]
         self.remember(title, meta={"niche": p.get("niche")})
@@ -100,5 +100,6 @@ class DigitalAgent(BaseAgent):
         database.execute("UPDATE products SET status='live' WHERE id=?", (d["db_product_id"],))
         self.log(f"'{d['title']}' marked live. List it on Gumroad with the file & copy provided.",
                  level="success")
+        self.record_win(f"Published digital product '{d['title']}'")
         self.set_status("idle")
         event_bus.emit("products_changed")

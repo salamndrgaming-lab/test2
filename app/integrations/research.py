@@ -26,15 +26,22 @@ from app.brain import router as brain
 from app.db import database
 
 _TRENDS_RSS = "https://trends.google.com/trending/rss"
-_REDDIT_SUBS = ["popular", "Entrepreneur", "smallbusiness"]
+# A mix of broad pulse + buyer/gift-intent subs where purchase demand shows up.
+_REDDIT_SUBS = ["popular", "Entrepreneur", "smallbusiness", "GiftIdeas", "BuyItForLife"]
 _UA = {"User-Agent": "Mozilla/5.0 (AI-Income-Team)"}
 
 _BRIEF_SYSTEM = (
-    "You are a market researcher for a print-on-demand and digital-products business. "
-    "From the trending signals provided, pick ONE specific niche with clear buyer intent "
-    "(people who would actually pay). Respond with ONLY a JSON object, no prose, no "
-    "markdown fences. Keys: niche (string), audience (string, who buys), product_angle "
-    "(string, what to make and why it sells), keywords (array of 6-10 short SEO phrases)."
+    "You are an elite niche strategist for a print-on-demand and digital-products business. "
+    "Your job is to find NICHE GAPS: audiences that are passionate and actively buying, but "
+    "served only by generic, low-effort designs — and to define the exact angle of attack "
+    "that beats what exists. Treat trending signals as raw ore: extract the durable buying "
+    "audience BEHIND a trend, never the trend's protected names (no brands, celebrities, "
+    "lyrics, teams — IP-safe only). Prefer specific sub-niches and passion intersections "
+    "(profession x hobby) over broad crowded markets. Respond with ONLY a JSON object, no "
+    "prose, no markdown fences. Keys: niche (string, the specific underserved audience), "
+    "audience (string, who buys and WHY they pay), product_angle (string: the gap/weakness "
+    "in what's currently offered to them, and the attack angle — what we make that beats "
+    "it), keywords (array of 6-10 long-tail phrases a BUYER would actually search)."
 )
 
 
@@ -158,9 +165,14 @@ async def demand_brief() -> dict | None:
         parts.append("No live trend signals are available; use evergreen buyer demand.")
     if hint:
         parts.append(f"Your best-selling direction so far: {hint}. Lean toward this.")
-    parts.append("Pick ONE niche we can make printable designs and digital guides for.")
+    parts.append("Pick ONE underserved niche we can attack with printable designs and "
+                 "digital guides: name the gap in what they're currently offered and the "
+                 "angle that beats it.")
 
-    reply = await brain.generate("\n\n".join(parts), system=_BRIEF_SYSTEM, task="bulk")
+    from app.brain import mission
+    reply = await brain.generate("\n\n".join(parts),
+                                 system=mission.compose("research", _BRIEF_SYSTEM),
+                                 task="bulk")
     brief = _parse_json(reply)
 
     database.execute(
