@@ -29,12 +29,21 @@ from app.orchestrator import approval, event_bus
 DEFAULT_PRICE_CENTS = 2499
 
 _CONCEPT_SYSTEM = (
-    "You are a print-on-demand product designer. Respond with ONLY a JSON object, "
-    "no prose, no markdown fences. Keys: niche (string), product_title (string, <60 chars), "
-    "description (string, 1-2 sentences for the listing), design_prompt (string, a vivid "
-    "text-to-image prompt for a clean, printable graphic on a transparent/plain background "
-    "that works across products like shirts, mugs, stickers and posters), tags (array of "
-    "5-8 short strings)."
+    "You design ARTWORK that is PHYSICALLY PRINTED on print-on-demand merchandise — "
+    "t-shirts, mugs, stickers and posters. You are NOT making digital products. The "
+    "design must be a bold, printable graphic (an illustration, slogan, or typographic "
+    "piece) that a person would proudly WEAR or DISPLAY. "
+    "NEVER propose phone or desktop wallpapers, app icons, UI/screen mockups, social-media "
+    "templates, digital planners, e-books, or anything viewed on a screen. "
+    "Respond with ONLY a JSON object, no prose, no markdown fences. Keys: "
+    "niche (string), product_title (string, <60 chars), "
+    "description (string, 1-2 sentence sales copy for the PHYSICAL item — how it looks "
+    "worn, used, gifted or displayed; never mention screens, phones, apps or downloads), "
+    "design_prompt (string, a vivid text-to-image prompt for the printable graphic itself: "
+    "a clean, high-contrast illustration or typographic design on a plain/transparent "
+    "background — just the art, with NO photo mockups, NO device screens, and NO blank "
+    "shirts/mugs in the image), "
+    "tags (array of 5-8 short strings)."
 )
 
 
@@ -114,13 +123,16 @@ class PodAgent(BaseAgent):
     async def _propose_one(self, shop_id: int, blueprint_specs: list[dict],
                            brief: dict | None, idx: int, total: int) -> None:
         self.log(f"Brainstorming product idea {idx}/{total}…")
-        user_prompt = "Invent one fresh, marketable product concept for a specific niche audience."
+        user_prompt = ("Invent one fresh, marketable design to PRINT on merchandise "
+                       "(shirts, mugs, stickers, posters) for a specific niche audience.")
         if brief:
             kws = ", ".join(brief.get("keywords", []) or [])
             user_prompt = (
-                f"Invent one fresh, marketable product concept for this niche: "
+                f"Invent one fresh, marketable design to PRINT on merchandise (shirts, "
+                f"mugs, stickers, posters) for this niche: "
                 f"{brief.get('niche')} (audience: {brief.get('audience')}). "
-                f"Angle: {brief.get('product_angle')}. Lean into these keywords: {kws}.")
+                f"Angle: {brief.get('product_angle')}. Lean into these keywords: {kws}. "
+                f"Translate the niche into wearable/displayable art, not a digital product.")
         # Persistent memory: never re-pitch a concept we've already made.
         user_prompt += self.avoid_repeats()
 
